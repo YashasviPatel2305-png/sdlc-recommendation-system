@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SDLC Model Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); }
+        .result-card { display: none; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <!-- Header -->
+    <header class="gradient-bg text-white py-6 shadow-lg">
+        <div class="container mx-auto px-4">
+            <h1 class="text-3xl font-bold flex items-center gap-3">
+                <i class="fas fa-network-wired"></i>
+                SDLC Model Recommendation System
+            </h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            
+            <!-- Input Section -->
+            <div class="lg:col-span-5 bg-white p-8 rounded-xl shadow-md border border-gray-100">
+                <h2 class="text-xl font-semibold mb-6 border-b pb-2 text-gray-700">Project Parameters</h2>
+                
+                <div class="space-y-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Requirements Stability</label>
+                        <select id="reqs" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="fixed">Fixed & Well Defined</option>
+                            <option value="evolving">Evolving / Unclear</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Project Scale</label>
+                        <select id="size" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="small">Small (Simple Features)</option>
+                            <option value="large">Large (Complex/Enterprise)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Risk Level</label>
+                        <select id="risk" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="low">Low Risk</option>
+                            <option value="high">High Risk (Technical/Financial)</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Client Involvement</label>
+                        <select id="client" class="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 outline-none">
+                            <option value="minimal">Minimal (End of project)</option>
+                            <option value="continuous">Continuous (Sprint-based)</option>
+                        </select>
+                    </div>
+
+                    <button onclick="recommendModel()" class="w-full gradient-bg text-white font-bold py-4 rounded-lg hover:opacity-90 transition-all shadow-lg transform hover:-translate-y-1">
+                        GENERATE RECOMMENDATION
+                    </button>
+                </div>
+            </div>
+
+            <!-- Output Section -->
+            <div class="lg:col-span-7">
+                <div id="placeholder" class="bg-white h-full rounded-xl border-2 border-dashed border-gray-300 flex flex-col items-center justify-center p-10 text-gray-400">
+                    <i class="fas fa-robot text-6xl mb-4"></i>
+                    <p class="text-lg">Set parameters and run the analysis to see results</p>
+                </div>
+
+                <div id="resultCard" class="result-card bg-white p-8 rounded-xl shadow-md border border-gray-100">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <span class="text-blue-600 font-bold tracking-widest text-sm uppercase">Recommended Model</span>
+                            <h2 id="modelTitle" class="text-4xl font-extrabold text-gray-800 mt-1">Waterfall</h2>
+                        </div>
+                        <div class="text-right">
+                            <span class="block text-gray-500 text-sm">System Confidence</span>
+                            <span class="text-2xl font-mono font-bold text-green-500">98.2%</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-blue-50 p-6 rounded-lg mb-8">
+                        <h3 class="font-bold text-blue-800 mb-2 flex items-center gap-2">
+                            <i class="fas fa-lightbulb"></i> Analysis Reasoning:
+                        </h3>
+                        <ul id="logicPath" class="space-y-3 text-blue-900">
+                            <!-- Logic steps injected here -->
+                        </ul>
+                    </div>
+
+                    <div class="border-t pt-6">
+                        <h3 class="font-bold text-gray-700 mb-4">Logic Path Summary</h3>
+                        <div class="flex flex-wrap gap-2 items-center text-sm">
+                            <div class="px-3 py-1 bg-gray-100 rounded border">Start</div>
+                            <i class="fas fa-chevron-right text-gray-300"></i>
+                            <div id="path1" class="px-3 py-1 rounded border border-blue-200 bg-blue-50">Requirements</div>
+                            <i class="fas fa-chevron-right text-gray-300"></i>
+                            <div id="path2" class="px-3 py-1 rounded border border-blue-200 bg-blue-50">Constraint Check</div>
+                            <i class="fas fa-chevron-right text-gray-300"></i>
+                            <div id="path3" class="px-3 py-1 font-bold rounded border border-blue-500 bg-blue-100 text-blue-700">Result</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        function recommendModel() {
+            const reqs = document.getElementById('reqs').value;
+            const size = document.getElementById('size').value;
+            const risk = document.getElementById('risk').value;
+            const client = document.getElementById('client').value;
+
+            const placeholder = document.getElementById('placeholder');
+            const resultCard = document.getElementById('resultCard');
+            const modelTitle = document.getElementById('modelTitle');
+            const logicPath = document.getElementById('logicPath');
+            
+            let steps = [];
+            let prediction = "";
+
+            // Internal logic processing
+            if (reqs === 'fixed') {
+                steps.push("Identified: <strong>Fixed Requirements</strong> scope.");
+                if (risk === 'high') {
+                    prediction = "V-Model";
+                    steps.push("Constraint: High technical or safety risk detected.");
+                    steps.push("Outcome: Recommended V-Model for rigorous validation and verification.");
+                } else {
+                    if (size === 'small') {
+                        prediction = "Waterfall";
+                        steps.push("Constraint: Low complexity and small project size.");
+                        steps.push("Outcome: Recommended Waterfall for linear, efficient execution.");
+                    } else {
+                        prediction = "Incremental";
+                        steps.push("Constraint: Large scale with stable requirements.");
+                        steps.push("Outcome: Recommended Incremental model to deliver functional parts in stages.");
+                    }
+                }
+            } else {
+                steps.push("Identified: <strong>Evolving Requirements</strong> scope.");
+                if (client === 'continuous') {
+                    prediction = "Agile (Scrum)";
+                    steps.push("Constraint: Continuous stakeholder availability.");
+                    steps.push("Outcome: Recommended Agile to leverage iterative feedback loops.");
+                } else {
+                    if (risk === 'high') {
+                        prediction = "Spiral";
+                        steps.push("Constraint: High risk with high uncertainty.");
+                        steps.push("Outcome: Recommended Spiral model for intensive risk-driven analysis.");
+                    } else {
+                        prediction = "Kanban";
+                        steps.push("Constraint: Maintenance or continuous feature delivery.");
+                        steps.push("Outcome: Recommended Kanban for optimized flow management.");
+                    }
+                }
+            }
+
+            placeholder.style.display = 'none';
+            resultCard.style.display = 'block';
+            modelTitle.innerText = prediction;
+            
+            logicPath.innerHTML = steps.map(s => `
+                <li class="flex items-start gap-2">
+                    <i class="fas fa-check-circle mt-1 text-blue-500"></i>
+                    <span>${s}</span>
+                </li>
+            `).join('');
+
+            document.getElementById('path1').innerText = reqs.toUpperCase();
+            document.getElementById('path2').innerText = risk === 'high' ? "CRITICAL RISK" : "STANDARD RISK";
+            document.getElementById('path3').innerText = prediction.toUpperCase();
+
+            if(window.innerWidth < 1024) {
+                resultCard.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+    </script>
+</body>
+</html>
